@@ -1,0 +1,373 @@
+{
+    "info": {
+        "name": "Learn2UX API",
+        "description": "Complete API collection for Learn2UX backend - Bilingual UI/UX Documentation Platform",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:5000",
+            "type": "string"
+        },
+        {
+            "key": "token",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "categoryId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "questionId",
+            "value": "",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "Health Check",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/health",
+                    "host": ["{{baseUrl}}"],
+                    "path": ["health"]
+                }
+            }
+        },
+        {
+            "name": "Admin",
+            "item": [
+                {
+                    "name": "Register Admin",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 201) {",
+                                    "    const response = pm.response.json();",
+                                    "    pm.collectionVariables.set('token', response.data.token);",
+                                    "    console.log('Token saved:', response.data.token);",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"username\": \"admin\",\n  \"email\": \"admin@learn2ux.com\",\n  \"password\": \"admin123\",\n  \"name\": \"Admin User\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/register",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "admin", "register"]
+                        }
+                    }
+                },
+                {
+                    "name": "Login Admin",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    const response = pm.response.json();",
+                                    "    pm.collectionVariables.set('token', response.data.token);",
+                                    "    console.log('Token saved:', response.data.token);",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"admin@learn2ux.com\",\n  \"password\": \"admin123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/login",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "admin", "login"]
+                        }
+                    }
+                },
+                {
+                    "name": "Get My Profile",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/me",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "admin", "me"]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Categories",
+            "item": [
+                {
+                    "name": "Get All Categories",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/categories",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "categories"]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Category by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/categories/{{categoryId}}",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "categories", "{{categoryId}}"]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Category",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 201) {",
+                                    "    const response = pm.response.json();",
+                                    "    pm.collectionVariables.set('categoryId', response.data._id);",
+                                    "    console.log('Category ID saved:', response.data._id);",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"title\": {\n    \"en\": \"Design Principles\",\n    \"ar\": \"مبادئ التصميم\"\n  },\n  \"description\": {\n    \"en\": \"Learn the fundamental principles of UI/UX design that help create beautiful and functional interfaces\",\n    \"ar\": \"تعلم المبادئ الأساسية لتصميم واجهة المستخدم وتجربة المستخدم التي تساعد في إنشاء واجهات جميلة ووظيفية\"\n  }\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/categories",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "categories"]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Category",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"title\": {\n    \"en\": \"Design Principles - Updated\",\n    \"ar\": \"مبادئ التصميم - محدث\"\n  },\n  \"description\": {\n    \"en\": \"Updated description\",\n    \"ar\": \"الوصف المحدث\"\n  }\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/categories/{{categoryId}}",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "categories", "{{categoryId}}"]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Category",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/categories/{{categoryId}}",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "categories", "{{categoryId}}"]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Questions",
+            "item": [
+                {
+                    "name": "Get All Questions",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/questions",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "questions"]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Questions by Category",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/questions?categoryId={{categoryId}}",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "questions"],
+                            "query": [
+                                {
+                                    "key": "categoryId",
+                                    "value": "{{categoryId}}"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Question by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/questions/{{questionId}}",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "questions", "{{questionId}}"]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Question",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 201) {",
+                                    "    const response = pm.response.json();",
+                                    "    pm.collectionVariables.set('questionId', response.data._id);",
+                                    "    console.log('Question ID saved:', response.data._id);",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"categoryId\": \"{{categoryId}}\",\n  \"question\": {\n    \"en\": \"What is the golden ratio in design?\",\n    \"ar\": \"ما هي النسبة الذهبية في التصميم؟\"\n  },\n  \"answer\": {\n    \"en\": \"The golden ratio (approximately 1.618) is a mathematical ratio commonly found in nature and used in design to create aesthetically pleasing compositions. It can be applied to layout proportions, typography, and spacing.\",\n    \"ar\": \"النسبة الذهبية (حوالي 1.618) هي نسبة رياضية توجد بشكل شائع في الطبيعة وتستخدم في التصميم لإنشاء تركيبات جمالية. يمكن تطبيقها على نسب التخطيط والطباعة والمسافات.\"\n  },\n  \"links\": [\n    {\n      \"title\": {\n        \"en\": \"Learn More About Golden Ratio\",\n        \"ar\": \"اعرف المزيد عن النسبة الذهبية\"\n      },\n      \"url\": \"https://www.interaction-design.org/literature/article/the-golden-ratio-principles-of-form-and-layout\"\n    }\n  ]\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/questions",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "questions"]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Question",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"categoryId\": \"{{categoryId}}\",\n  \"question\": {\n    \"en\": \"Updated question text?\",\n    \"ar\": \"نص السؤال المحدث؟\"\n  },\n  \"answer\": {\n    \"en\": \"Updated answer text\",\n    \"ar\": \"نص الإجابة المحدث\"\n  },\n  \"links\": []\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/questions/{{questionId}}",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "questions", "{{questionId}}"]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Question",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/questions/{{questionId}}",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "questions", "{{questionId}}"]
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
