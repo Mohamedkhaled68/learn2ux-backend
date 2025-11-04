@@ -1,4 +1,5 @@
 const Category = require("../models/Category");
+const Question = require("../models/Question");
 
 /**
  * @route   GET /api/categories
@@ -9,10 +10,24 @@ const getAllCategories = async (req, res, next) => {
     try {
         const categories = await Category.find().sort({ createdAt: -1 });
 
+        // Add question count to each category
+        const categoriesWithCount = await Promise.all(
+            categories.map(async (category) => {
+                const questionCount = await Question.countDocuments({
+                    categoryId: category._id,
+                });
+
+                return {
+                    ...category.toObject(),
+                    questionNumber: questionCount,
+                };
+            })
+        );
+
         res.status(200).json({
             success: true,
-            count: categories.length,
-            data: categories,
+            count: categoriesWithCount.length,
+            data: categoriesWithCount,
         });
     } catch (error) {
         next(error);
